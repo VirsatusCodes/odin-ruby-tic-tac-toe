@@ -3,12 +3,15 @@
 # board item
 class Board
   attr_accessor :board, :player_one, :player_two
+  attr_reader :winner
 
   def initialize(player_one, player_two)
-    # [['', '', ''], ['', '', ''], ['', '', '']] <- this is the visual creation
+    # [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']] <- this is the visual creation
     @board = Array.new(3) { Array.new(3, ' ') }
+    # @board = [['O', 'O', 'O'], [' ', ' ', ' '], [' ', ' ', ' ']]
     @player_one = player_one
     @player_two = player_two
+    @winner = nil
   end
 
   def display_board
@@ -39,21 +42,20 @@ class Board
 
   def check_row
     @board.each do |row|
-      return row.uniq[0] if all_same_non_space_elements?(row)
+      @winner = identify_winner(row.uniq[0]) if all_same_non_space_elements?(row)
     end
   end
 
   def check_column
     @board.transpose.each do |col|
-      puts 'there should be a winner' if all_same_non_space_elements?(col)
-      return col.uniq[0] if all_same_non_space_elements?(col)
+      @winner = identify_winner(col.uniq[0]) if all_same_non_space_elements?(col)
     end
   end
 
   def check_diagonals
     diagonals = [[@board[0][0], @board[1][1], @board[2][2]], [@board[0][2], @board[1][1], @board[2][0]]]
     diagonals.each do |diag|
-      return diag.uniq[0] if all_same_non_space_elements?(diag)
+      @winner = identify_winner(diag.uniq[0]) if all_same_non_space_elements?(diag)
     end
   end
 
@@ -67,14 +69,16 @@ class Board
     elsif @player_two.icon == winner_icon
       winner = @player_two
     end
-
-    puts "The winner is #{winner.name}" if winner
+    winner
   end
 
   def check_for_winner
-    winner_icon = check_row || check_column || check_diagonals
-    return unless winner_icon
+    check_row
+    check_column
+    check_diagonals
 
-    identify_winner(winner_icon)
+    return unless @winner
+
+    puts "Congrats, the winner is #{@winner.name}"
   end
 end

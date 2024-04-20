@@ -42,18 +42,20 @@ def gameplay_loop(board, first_loop)
   board.display_board if first_loop
 
   player_loop(board)
-  winner = board.check_for_winner
-  return winner if winner
+  board.check_for_winner
+  return if board.winner
 
   seperate_actions
 
   computer_loop(board)
   board.check_for_winner
+  nil if board.winner
 end
 
 first_loop = true
 loop do
-  break if gameplay_loop(board, first_loop)
+  gameplay_loop(board, first_loop)
+  break if board.winner
 
   first_loop = false
 end
