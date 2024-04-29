@@ -27,6 +27,6 @@ class Computer
   end
 
   def provide_move
-    @legal_moves[0]
+    @legal_moves[rand(@legal_moves.length)]
   end
 end
